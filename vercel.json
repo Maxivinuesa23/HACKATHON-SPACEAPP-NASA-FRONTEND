@@ -25,11 +25,5 @@
       "src": "/(.*)",
       "dest": "/FrontEnd/dist/index.html"
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/FrontEnd/dist/index.html"
-    }
   ]
 }
