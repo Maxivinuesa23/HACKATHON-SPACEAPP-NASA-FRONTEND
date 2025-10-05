@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "name": "cloudbusters-air-quality-monorepo",
+  "name": "cloudbusters-air-quality",
   "builds": [
     {
-      "src": "FrontEnd/package.json",
+      "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "buildCommand": "cd FrontEnd && npm ci && npm run build",
-        "outputDirectory": "FrontEnd/dist"
+        "buildCommand": "npm run build",
+        "outputDirectory": "dist"
       }
     }
   ],
@@ -23,7 +23,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/FrontEnd/dist/index.html"
+      "dest": "/index.html"
     }
   ]
 }
