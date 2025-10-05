@@ -20,13 +20,19 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "./",
   build: {
     outDir: "dist",
     assetsDir: "assets",
+    sourcemap: false,
     rollupOptions: {
       output: {
-        assetFileNames: "assets/[name].[ext]",
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          utils: ['axios', 'lucide-react']
+        },
+        assetFileNames: "assets/[name].[hash][extname]",
+        chunkFileNames: "assets/[name].[hash].js",
+        entryFileNames: "assets/[name].[hash].js"
       },
     },
   },

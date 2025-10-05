@@ -2,7 +2,7 @@
 // Versión con fallback para producción en Vercel
 
 const API_BASE_URL = import.meta.env.PROD ? 
-  'https://your-python-backend-url.com/api' : // Cambia esto por tu backend en producción
+  'https://hackathon-spaceapp-nasa-backend.onrender.com/api' : // Backend en Render
   'http://localhost:5000/api';
 
 // Datos de fallback para demostración en producción
@@ -124,26 +124,16 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 export const airQualityAPI = {
   // Verificar estado del servidor
   async getHealth() {
-    await delay(500); // Simular latencia
-    
-    if (import.meta.env.PROD) {
-      // En producción, usar datos simulados
-      return {
-        status: 'healthy',
-        message: 'Demo mode - using simulated data',
-        mode: 'production'
-      };
-    }
-    
     try {
       const response = await fetch(`${API_BASE_URL}/health`);
       if (!response.ok) throw new Error('Network error');
       return await response.json();
     } catch (error) {
       console.warn('Backend not available, using fallback data');
+      await delay(500); // Simular latencia
       return {
         status: 'healthy',
-        message: 'Using fallback data',
+        message: 'Using fallback data - backend unavailable',
         mode: 'fallback'
       };
     }
@@ -151,59 +141,36 @@ export const airQualityAPI = {
 
   // Obtener lista de ciudades
   async getCities() {
-    await delay(300);
-    
-    if (import.meta.env.PROD) {
-      return {
-        success: true,
-        cities: FALLBACK_DATA.cities,
-        message: 'Demo data loaded'
-      };
-    }
-    
     try {
       const response = await fetch(`${API_BASE_URL}/cities`);
       if (!response.ok) throw new Error('Network error');
       return await response.json();
     } catch (error) {
       console.warn('Backend not available, using fallback cities');
+      await delay(300);
       return {
         success: true,
         cities: FALLBACK_DATA.cities,
-        message: 'Fallback cities loaded'
+        message: 'Fallback cities loaded - backend unavailable'
       };
     }
   },
 
   // Obtener datos de una ciudad específica
   async getCityData(cityName) {
-    await delay(800);
-    
-    if (import.meta.env.PROD) {
-      const cityData = FALLBACK_DATA.cityData[cityName];
-      if (cityData) {
-        return {
-          success: true,
-          data: cityData,
-          message: `Demo data for ${cityName}`
-        };
-      } else {
-        throw new Error(`No demo data available for ${cityName}`);
-      }
-    }
-    
     try {
       const response = await fetch(`${API_BASE_URL}/cities/${encodeURIComponent(cityName)}`);
       if (!response.ok) throw new Error('Network error');
       return await response.json();
     } catch (error) {
       console.warn(`Backend not available for ${cityName}, using fallback data`);
+      await delay(800);
       const cityData = FALLBACK_DATA.cityData[cityName];
       if (cityData) {
         return {
           success: true,
           data: cityData,
-          message: `Fallback data for ${cityName}`
+          message: `Fallback data for ${cityName} - backend unavailable`
         };
       } else {
         throw new Error(`No fallback data available for ${cityName}`);
@@ -213,19 +180,6 @@ export const airQualityAPI = {
 
   // Hacer predicción específica
   async predict(cityName) {
-    await delay(1000);
-    
-    if (import.meta.env.PROD) {
-      const cityData = FALLBACK_DATA.cityData[cityName];
-      if (cityData) {
-        return {
-          success: true,
-          prediction: cityData.prediction,
-          message: `Demo prediction for ${cityName}`
-        };
-      }
-    }
-    
     try {
       const response = await fetch(`${API_BASE_URL}/predict`, {
         method: 'POST',
@@ -236,12 +190,13 @@ export const airQualityAPI = {
       return await response.json();
     } catch (error) {
       console.warn(`Prediction backend not available for ${cityName}, using fallback`);
+      await delay(1000);
       const cityData = FALLBACK_DATA.cityData[cityName];
       if (cityData) {
         return {
           success: true,
           prediction: cityData.prediction,
-          message: `Fallback prediction for ${cityName}`
+          message: `Fallback prediction for ${cityName} - backend unavailable`
         };
       } else {
         throw new Error(`No fallback prediction for ${cityName}`);
